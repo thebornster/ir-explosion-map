@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Explosion Map - Iran</title>
+
+  <!-- Flatpickr CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Tahoma, sans-serif;
+      direction: rtl;
+    }
+    #map {
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+      z-index: 1;
+    }
+    #searchBox {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      padding: 8px 10px;
+      font-size: 14px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      z-index: 1002;
+      background: white;
+    }
+    #suggestions {
+      position: fixed;
+      top: 48px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      background: white;
+      border: 1px solid #ccc;
+      max-height: 150px;
+      overflow-y: auto;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+      z-index: 1002;
+      border-radius: 0 0 6px 6px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+    #suggestions li {
+      padding: 8px;
+      cursor: pointer;
+    }
+    #suggestions li:hover {
+      background-color: #f0f0f0;
+    }
+    #submissionForm {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: white;
+      padding: 16px;
+      border: 1px solid #ccc;
+      z-index: 1002;
+      max-width: 320px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    #submissionForm h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+    #submissionForm input,
+    #submissionForm textarea {
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+    #submissionForm button {
+      width: 100%;
+      padding: 8px;
+      background-color: #d33;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #submissionForm button:hover {
+      background-color: #b22;
+    }
+    #locationDisplay {
+      color: #444;
+      margin-bottom: 10px;
+      min-height: 24px;
+    }
+  </style>
+</head>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<!-- Optional: Persian Calendar support -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fa.js"></script>
+
+<body>
+  <!-- Search box -->
+  <input type="text" id="searchBox" placeholder="جستجوی رویداد، شهر یا استان" autocomplete="off" />
+  <ul id="suggestions"></ul>
+
+  <!-- Map container -->
+  <div id="map"></div>
+
+  <!-- Submission Form -->
+  <form id="submissionForm">
+    <h3>📍 ثبت اطلاعات انفجار</h3>
+    <p id="locationDisplay">لطفاً روی نقشه کلیک کنید...</p>
+
+    <input type="hidden" id="latInput" />
+    <input type="hidden" id="lonInput" />
+
+    <label>توضیحات:<br />
+      <textarea id="descInput" rows="2" required></textarea>
+    </label><br /><br />
+
+    <label>تاریخ:<br />
+      <input id="dateInput" type="date" required />
+    </label><br /><br />
+
+    <label>زمان:<br />
+      <input id="timeInput" type="text" required />
+    </label><br /><br />
+
+    <label>لینک خبر ویا ویدیو:<br />
+      <input id="videoLinkInput" type="url" placeholder="https://..." autocomplete="off" />
+    </label><br /><br />
+
+    <button type="submit">ارسال</button>
+  </form>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- JavaScript -->
+  <script src="app.js" defer></script>
+
+  <script
+  flatpickr("#timeInput", {
+  enableTime: true,
+  noCalendar: true,
+  dateFormat: "h:i K",  // 12-hour format with AM/PM
+  time_24hr: false,
+  defaultHour: 12,
+  defaultMinute: 0
+});
+></script>
+</body>
+</html>
