@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(response => response.json())
     .then(data => {
       iranCities = data;
-      // Now you can use iranCities in your search functionality
+      // iranCities search functionality
     })
     .catch(err => {
       console.error('Failed to load iranCities.json:', err);
@@ -53,10 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }).addTo(map).bindPopup("🧭 موقعیت انتخاب‌شده").openPopup();
   });
 
-  const token = ""; // Fill in your Airtable API token for reading
-  const baseId = "";
+  const token = AIRTABLE_READ_KEY; 
+  const baseId = AIRTABLE_BASE_ID;
   const tableName = "Table 1";
-  const tokenSubm = ""; // Fill in your Airtable API token for submissions (write)
+  const tokenSubm = AIRTABLE_WRITE_KEY; 
   const submissionTable = "Submissions";
   let allMarkers = [];
 
