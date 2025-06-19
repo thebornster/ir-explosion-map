@@ -59,9 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
           const iranLocalDate = new Date(Date.UTC(year, month - 1, day, hours, minutes));
           const iranOffsetMs = 3.5 * 60 * 60 * 1000;
           const iranTimeUtcMs = iranLocalDate.getTime() - iranOffsetMs;
-          const nowUtcMs = Date.now();
-          const diffHours = (nowUtcMs - iranTimeUtcMs) / (1000 * 60 * 60);
-          iconColor = diffHours < 24 ? 'red' : 'gray';
+          const eventDate = new Date(iranTimeUtcMs);
+          const today = new Date();
+          const isSameDay = eventDate.toDateString() === today.toDateString();
+          iconColor = isSameDay ? 'red' : 'gray';
         }
 
         const icon = new L.Icon({
