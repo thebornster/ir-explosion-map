@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const { Latitude: lat, Longitude: lon, Description: desc = 'No description', Date: date = 'تاریخ نامشخص', Time: time = 'زمان نامشخص' } = record.fields;
         if (typeof lat !== 'number' || typeof lon !== 'number') return;
 
-        let iconColor = 'gray';
+        let iconColor = 'red';
         const dateParts = date.split('-').map(Number);
         const timeDecimal = parseFloat(time);
 
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const iranNow = new Date(nowUtc.getTime() + iranOffsetMs);
           const isSameIranDay = eventDate.toDateString() === iranNow.toDateString();
 
-iconColor = isSameIranDay ? 'red' : 'gray';
+          iconColor = isSameIranDay ? 'red' : 'gray';
 
         }
 
