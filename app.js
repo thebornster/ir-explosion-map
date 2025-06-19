@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const iranTimeUtcMs = iranLocalDate.getTime() - iranOffsetMs;
           const nowUtcMs = Date.now();
           const diffHours = (nowUtcMs - iranTimeUtcMs) / (1000 * 60 * 60);
-          iconColor = diffHours < 12 ? 'red' : 'gray';
+          iconColor = diffHours < 24 ? 'red' : 'gray';
         }
 
         const icon = new L.Icon({
