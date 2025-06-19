@@ -28,6 +28,5 @@ dist-ssr
 .env.local
 .env.*.local
 
-gitleaks-report.json
 
 
