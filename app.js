@@ -3,31 +3,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fetch('iranCities.json')
     .then(response => response.json())
-    .then(data => {
-      iranCities = data;
-      // iranCities search functionality
-    })
-    .catch(err => {
-      console.error('Failed to load iranCities.json:', err);
-    });
+    .then(data => { iranCities = data; })
+    .catch(err => console.error('Failed to load iranCities.json:', err));
 
   const searchBox = document.getElementById('searchBox');
   const suggestionBox = document.getElementById('suggestions');
 
   Object.assign(suggestionBox.style, {
-    position: 'absolute',
-    zIndex: '1001',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: '300px',
-    background: 'white',
-    listStyle: 'none',
-    padding: '0',
-    marginTop: '5px',
-    border: '1px solid #ccc',
-    maxHeight: '150px',
-    overflowY: 'auto',
-    fontSize: '14px'
+    position: 'absolute', zIndex: '1001', left: '50%', transform: 'translateX(-50%)',
+    width: '300px', background: 'white', listStyle: 'none',
+    padding: '0', marginTop: '5px', border: '1px solid #ccc',
+    maxHeight: '150px', overflowY: 'auto', fontSize: '14px'
   });
 
   const map = L.map('map').setView([32.4279, 53.688], 6);
@@ -53,68 +39,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }).addTo(map).bindPopup("این مکان را انتخاب کرده‌اید").openPopup();
   });
 
-  const token = import.meta.env.VITE_AIRTABLE_READ_TOKEN;
-  const baseId = import.meta.env.VITE_AIRTABLE_BASE_ID;
-  const tableName = "Table 1";
-  const tokenSubm = import.meta.env.VITE_AIRTABLE_WRITE_TOKEN;
-  const submissionTable = "Submissions";
   let allMarkers = [];
 
-  async function fetchAllRecords() {
-    let offset = '';
-    let allRecords = [];
+  fetch('/api/fetchMarkers')
+    .then(res => res.json())
+    .then(records => {
+      records.forEach(record => {
+        const { Latitude: lat, Longitude: lon, Description: desc = 'No description', Date: date = 'تاریخ نامشخص', Time: time = 'زمان نامشخص' } = record.fields;
+        if (typeof lat !== 'number' || typeof lon !== 'number') return;
 
-    do {
-      const url = `https://api.airtable.com/v0/${baseId}/${encodeURIComponent(tableName)}?${offset ? `offset=${offset}` : ''}`;
-      const response = await fetch(url, {
-        headers: { Authorization: `Bearer ${token}` }
+        let iconColor = 'gray';
+        const dateParts = date.split('-').map(Number);
+        const timeDecimal = parseFloat(time);
+
+        if (dateParts.length === 3 && !isNaN(timeDecimal)) {
+          const [year, month, day] = dateParts;
+          const hours = Math.floor(timeDecimal);
+          const minutes = Math.round((timeDecimal - hours) * 100);
+          const iranLocalDate = new Date(Date.UTC(year, month - 1, day, hours, minutes));
+          const iranOffsetMs = 3.5 * 60 * 60 * 1000;
+          const iranTimeUtcMs = iranLocalDate.getTime() - iranOffsetMs;
+          const nowUtcMs = Date.now();
+          const diffHours = (nowUtcMs - iranTimeUtcMs) / (1000 * 60 * 60);
+          iconColor = diffHours < 12 ? 'red' : 'gray';
+        }
+
+        const icon = new L.Icon({
+          iconUrl: iconColor === 'red' ? 'assets/RedMarkerIcon.png' : 'assets/GrayMarkerIcon.png',
+          iconSize: [32, 32],
+          iconAnchor: [16, 32],
+          popupAnchor: [0, -32]
+        });
+
+        const marker = L.marker([lat, lon], { icon }).addTo(map)
+          .bindPopup(`<strong>تاریخ:</strong> ${date}<br><strong>زمان:</strong> ${parseFloat(time).toFixed(2)}<br><br><strong>توضیح:</strong> ${desc}`);
+
+        allMarkers.push(marker);
       });
-      const data = await response.json();
-
-      if (data.records) {
-        allRecords = allRecords.concat(data.records);
-      }
-      offset = data.offset;
-    } while (offset);
-
-    return allRecords;
-  }
-
-  fetchAllRecords().then(records => {
-    records.forEach(record => {
-      const { Latitude: lat, Longitude: lon, Description: desc = 'No description', Date: date = 'تاریخ نامشخص', Time: time = 'زمان نامشخص' } = record.fields;
-      if (typeof lat !== 'number' || typeof lon !== 'number') return;
-
-      let iconColor = 'gray';
-      const dateParts = date.split('-').map(Number);
-      const timeDecimal = parseFloat(time);
-
-      if (dateParts.length === 3 && !isNaN(timeDecimal)) {
-        const [year, month, day] = dateParts;
-        const hours = Math.floor(timeDecimal);
-        const minutes = Math.round((timeDecimal - hours) * 100);
-        const iranLocalDate = new Date(Date.UTC(year, month - 1, day, hours, minutes));
-        const iranOffsetMs = 3.5 * 60 * 60 * 1000;
-        const iranTimeUtcMs = iranLocalDate.getTime() - iranOffsetMs;
-        const nowUtcMs = Date.now();
-        const diffHours = (nowUtcMs - iranTimeUtcMs) / (1000 * 60 * 60);
-        iconColor = diffHours < 12 ? 'red' : 'gray';
-      }
-
-      const icon = new L.Icon({
-        iconUrl: iconColor === 'red' ? 'assets/RedMarkerIcon.png' : 'assets/GrayMarkerIcon.png',
-        iconSize: [32, 32],
-        iconAnchor: [16, 32],
-        popupAnchor: [0, -32]
-      });
-
-      const marker = L.marker([lat, lon], { icon }).addTo(map)
-        .bindPopup(`<strong>تاریخ:</strong> ${date}<br><strong>زمان:</strong> ${parseFloat(time).toFixed(2)}<br><br><strong>توضیح:</strong> ${desc}`);
-
-      marker.meta = `${desc} ${time}`.toLowerCase();
-      allMarkers.push(marker);
-    });
-  }).catch(err => console.error("Error loading Airtable data:", err));
+    }).catch(err => console.error("Error loading marker data:", err));
 
   searchBox.addEventListener('input', () => {
     const query = searchBox.value.trim().toLowerCase();
@@ -135,11 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
         suggestionBox.appendChild(li);
       });
     }
-
- 
   });
 
-  // Submission form handler
   const submissionForm = document.getElementById('submissionForm');
   if (submissionForm) {
     submissionForm.addEventListener('submit', async (e) => {
@@ -169,20 +128,18 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       try {
-        const res = await fetch(`https://api.airtable.com/v0/${baseId}/${encodeURIComponent(submissionTable)}`, {
+        const res = await fetch('/api/submitMarker', {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${tokenSubm}`,
             "Content-Type": "application/json"
           },
           body: JSON.stringify(data)
         });
 
         if (!res.ok) {
-  const errorText = await res.text();
-  throw new Error(`خطا در ارسال: ${res.status} ${res.statusText}\n${errorText}`);
-}
-
+          const errorText = await res.text();
+          throw new Error(`خطا در ارسال: ${res.status} ${res.statusText}\n${errorText}`);
+        }
 
         alert("اطلاعات با موفقیت ارسال شد!");
         submissionForm.reset();
