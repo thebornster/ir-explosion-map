@@ -50,13 +50,13 @@ document.addEventListener('DOMContentLoaded', () => {
         iconAnchor: [16, 32],
         popupAnchor: [0, -32]
       })
-    }).addTo(map).bindPopup("🧭 موقعیت انتخاب‌شده").openPopup();
+    }).addTo(map).bindPopup("این مکان را انتخاب کرده‌اید").openPopup();
   });
 
-  const token = AIRTABLE_READ_KEY; 
-  const baseId = AIRTABLE_BASE_ID;
+  const token = import.meta.env.VITE_AIRTABLE_READ_TOKEN;
+  const baseId = import.meta.env.VITE_AIRTABLE_BASE_ID;
   const tableName = "Table 1";
-  const tokenSubm = AIRTABLE_WRITE_KEY; 
+  const tokenSubm = import.meta.env.VITE_AIRTABLE_WRITE_TOKEN;
   const submissionTable = "Submissions";
   let allMarkers = [];
 
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       const marker = L.marker([lat, lon], { icon }).addTo(map)
-        .bindPopup(`<strong>تاریخ:</strong> ${date}<br><strong>زمان:</strong> ${time}<br><br><strong>توضیح:</strong> ${desc}`);
+        .bindPopup(`<strong>تاریخ:</strong> ${date}<br><strong>زمان:</strong> ${parseFloat(time).toFixed(2)}<br><br><strong>توضیح:</strong> ${desc}`);
 
       marker.meta = `${desc} ${time}`.toLowerCase();
       allMarkers.push(marker);

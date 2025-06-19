@@ -132,7 +132,7 @@
     </label><br /><br />
 
     <label>تاریخ:<br />
-      <input id="dateInput" type="date" required />
+      <input id="dateInput" type="text" required />
     </label><br /><br />
 
     <label>زمان:<br />
@@ -149,18 +149,10 @@
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <!-- JavaScript -->
-   <script src="config.js"></script>
-  <script src="app.js" defer></script>
 
-  <script
-  flatpickr("#timeInput", {
-  enableTime: true,
-  noCalendar: true,
-  dateFormat: "h:i K",  // 12-hour format with AM/PM
-  time_24hr: false,
-  defaultHour: 12,
-  defaultMinute: 0
-});
+  <script type="module" src="/app.js"></script>
+
+ 
 ></script>
 </body>
 </html>
