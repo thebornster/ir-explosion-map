@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (clickMarker) map.removeLayer(clickMarker);
     clickMarker = L.marker([lat, lon], {
       icon: new L.Icon({
-        iconUrl: 'assets/RedMarkerIcon.png',
+        iconUrl: '/assets/RedMarkerIcon.png',
         iconSize: [32, 32],
         iconAnchor: [16, 32],
         popupAnchor: [0, -32]
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const icon = new L.Icon({
-          iconUrl: iconColor === 'red' ? 'assets/RedMarkerIcon.png' : 'assets/GrayMarkerIcon.png',
+          iconUrl: iconColor === 'red' ? '/assets/RedMarkerIcon.png' : '/assets/GrayMarkerIcon.png',
           iconSize: [32, 32],
           iconAnchor: [16, 32],
           popupAnchor: [0, -32]
