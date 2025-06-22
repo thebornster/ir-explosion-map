@@ -25,10 +25,21 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(res => res.json())
     .then(records => {
       records.forEach(record => {
-        const { Latitude: lat, Longitude: lon, Description: desc = 'No description', Date: date = 'تاریخ نامشخص', Time: time = 'زمان نامشخص' } = record.fields;
+        const {
+          Latitude: lat,
+          Longitude: lon,
+          Description: desc = 'بدون توضیح',
+          Date: date = 'تاریخ نامشخص',
+          Time: time = 'زمان نامشخص',
+          EventType: eventType = 'نامشخص',
+          TargetType: targetType = 'نامشخص',
+          LikelyLocation: likelyLocation = 'نامشخص',
+          Link: link = ''
+        } = record.fields;
+
         if (typeof lat !== 'number' || typeof lon !== 'number') return;
 
-        let iconColor = 'red';
+        let iconColor = 'gray';
         const dateParts = date.split('-').map(Number);
         const timeDecimal = parseFloat(time);
 
@@ -45,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
           const isSameIranDay = eventDate.toDateString() === iranNow.toDateString();
 
           iconColor = isSameIranDay ? 'red' : 'gray';
-
         }
 
         const icon = new L.Icon({
@@ -55,8 +65,19 @@ document.addEventListener('DOMContentLoaded', () => {
           popupAnchor: [0, -32]
         });
 
+        const popupHtml = `
+          <div style="font-size:14px; line-height:1.6;">
+            <strong>تاریخ و زمان:</strong> ${date} - ${parseFloat(time).toFixed(2)}<br>
+            <strong>توضیح:</strong> ${desc}<br>
+            <strong>نوع رویداد:</strong> ${eventType}<br>
+            <strong>نوع هدف:</strong> ${targetType}<br>
+            <strong>مکان احتمالی:</strong> ${likelyLocation}<br>
+            ${link ? `<strong>لینک:</strong> <a href="${link}" target="_blank">مشاهده</a>` : ''}
+          </div>
+        `;
+
         const marker = L.marker([lat, lon], { icon }).addTo(map)
-          .bindPopup(`<strong>تاریخ:</strong> ${DateTime}<br><strong>زمان:</strong> ${parseFloat(time).toFixed(2)}<br><br><strong>توضیح:</strong> ${desc}`);
+          .bindPopup(popupHtml);
 
         allMarkers.push(marker);
       });
@@ -82,61 +103,4 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   });
-
-  const submissionForm = document.getElementById('submissionForm');
-  if (submissionForm) {
-    submissionForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const lat = document.getElementById('latInput').value;
-      const lon = document.getElementById('lonInput').value;
-      const desc = document.getElementById('descInput').value.trim();
-      const date = document.getElementById('dateInput').value.trim();
-      const time = document.getElementById('timeInput').value.trim();
-      const videoLink = document.getElementById('videoLinkInput').value.trim();
-
-      if (!lat || !lon) {
-        alert("لطفاً روی نقشه کلیک کنید تا موقعیت را انتخاب کنید.");
-        return;
-      }
-
-      const data = {
-        fields: {
-          Latitude: parseFloat(lat),
-          Longitude: parseFloat(lon),
-          Description: desc,
-          Date: date,
-          Time: time,
-          VideoLink: videoLink || ""
-        }
-      };
-
-      try {
-        const res = await fetch('/api/submitMarker', {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(data)
-        });
-
-        if (!res.ok) {
-          const errorText = await res.text();
-          throw new Error(`خطا در ارسال: ${res.status} ${res.statusText}\n${errorText}`);
-        }
-
-        alert("اطلاعات با موفقیت ارسال شد!");
-        submissionForm.reset();
-
-        if (clickMarker) {
-          map.removeLayer(clickMarker);
-          clickMarker = null;
-          document.getElementById('locationDisplay').textContent = "لطفاً روی نقشه کلیک کنید...";
-        }
-      } catch (err) {
-        console.error(err);
-        alert("ارسال اطلاعات با خطا مواجه شد. لطفاً دوباره تلاش کنید.");
-      }
-    });
-  }
 });
