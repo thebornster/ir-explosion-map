@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (typeof lat !== 'number' || typeof lon !== 'number') return;
 
-        let iconColor = 'gray';
+        let iconColor = 'red';
         const dateParts = date.split('-').map(Number);
         const timeDecimal = parseFloat(time);
 
