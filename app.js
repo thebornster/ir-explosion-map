@@ -19,26 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const map = L.map('map').setView([32.4279, 53.688], 6);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
 
-  let clickMarker = null;
-  map.on('click', function (e) {
-    const lat = e.latlng.lat.toFixed(6);
-    const lon = e.latlng.lng.toFixed(6);
-
-    document.getElementById('latInput').value = lat;
-    document.getElementById('lonInput').value = lon;
-    document.getElementById('locationDisplay').textContent = `📌 مختصات: ${lat}, ${lon}`;
-
-    if (clickMarker) map.removeLayer(clickMarker);
-    clickMarker = L.marker([lat, lon], {
-      icon: new L.Icon({
-        iconUrl: '/assets/RedMarkerIcon.png',
-        iconSize: [32, 32],
-        iconAnchor: [16, 32],
-        popupAnchor: [0, -32]
-      })
-    }).addTo(map).bindPopup("این مکان را انتخاب کرده‌اید").openPopup();
-  });
-
   let allMarkers = [];
 
   fetch('/api/fetchMarkers')
