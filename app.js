@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const marker = L.marker([lat, lon], { icon }).addTo(map)
-          .bindPopup(`<strong>تاریخ:</strong> ${date}<br><strong>زمان:</strong> ${parseFloat(time).toFixed(2)}<br><br><strong>توضیح:</strong> ${desc}`);
+          .bindPopup(`<strong>تاریخ:</strong> ${DateTime}<br><strong>زمان:</strong> ${parseFloat(time).toFixed(2)}<br><br><strong>توضیح:</strong> ${desc}`);
 
         allMarkers.push(marker);
       });
