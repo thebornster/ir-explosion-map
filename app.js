@@ -39,27 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (typeof lat !== 'number' || typeof lon !== 'number') return;
 
-        let iconColor = 'red';
-        const dateParts = date.split('-').map(Number);
-        const timeDecimal = parseFloat(time);
-
-        if (dateParts.length === 3 && !isNaN(timeDecimal)) {
-          const [year, month, day] = dateParts;
-          const hours = Math.floor(timeDecimal);
-          const minutes = Math.round((timeDecimal - hours) * 100);
-          const iranLocalDate = new Date(Date.UTC(year, month - 1, day, hours, minutes));
-          const iranOffsetMs = 3.5 * 60 * 60 * 1000;
-          const iranTimeUtcMs = iranLocalDate.getTime() - iranOffsetMs;
-          const eventDate = new Date(iranTimeUtcMs);
-          const nowUtc = new Date();
-          const iranNow = new Date(nowUtc.getTime() + iranOffsetMs);
-          const isSameIranDay = eventDate.toDateString() === iranNow.toDateString();
-
-          iconColor = isSameIranDay ? 'red' : 'gray';
-        }
-
+        // Always use red icon
         const icon = new L.Icon({
-          iconUrl: iconColor === 'red' ? '/assets/RedMarkerIcon.png' : '/assets/GrayMarkerIcon.png',
+          iconUrl: '/assets/RedMarkerIcon.png',
           iconSize: [32, 32],
           iconAnchor: [16, 32],
           popupAnchor: [0, -32]
