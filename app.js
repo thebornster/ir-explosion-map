@@ -29,8 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
           Latitude: lat,
           Longitude: lon,
           Description: desc = 'بدون توضیح',
-          Date: date = 'تاریخ نامشخص',
-          Time: time = 'زمان نامشخص',
+          DateTime: dateTime = 'تاریخ نامشخص',
           EventType: eventType = 'نامشخص',
           TargetType: targetType = 'نامشخص',
           LikelyLocation: likelyLocation = 'نامشخص',
@@ -49,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const popupHtml = `
           <div style="font-size:14px; line-height:1.6;">
-            <strong>تاریخ و زمان:</strong> ${date} - ${parseFloat(time).toFixed(2)}<br>
+            <strong>تاریخ و زمان:</strong> ${dateTime}<br>
             <strong>توضیح:</strong> ${desc}<br>
             <strong>نوع رویداد:</strong> ${eventType}<br>
             <strong>نوع هدف:</strong> ${targetType}<br>
