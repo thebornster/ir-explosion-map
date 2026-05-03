@@ -2,26 +2,30 @@
 
 ## Overview
 
-nfejar.online visualizes explosion events in Iran, during regional conflicts in the middle east, based on citizen-submitted reports from Telegram. The platform aggregates, processes, and analyzes reports to provide approximate locations, event types, and target classifications. The website aims to inform the general public about areas affected by explosions.
+nfejar.online visualizes explosion events in Iran, during regional conflicts in the Middle East, based on citizen-submitted reports from Telegram. The platform aggregates, processes, and analyzes reports to provide approximate locations, event types, and target classifications. The website aims to inform the general public about areas affected by explosions.
 
 ## Features
 
-* Interactive map of Iran displaying explosion events as markers.
+* Interactive map of Iran displaying explosion events as color-coded markers.
 * Clickable markers show:
 
   * Date of event
   * Description
-  * Event type
+  * Event type (explosion, strike, fire, other)
   * Target type (e.g., military, industrial)
   * Probable location
   * Link to original Telegram reports
-* City search functionality.
+* City/event search functionality with autocomplete.
+* Side panel for submitting new event reports to Airtable.
 * Data updates automatically on a scheduled interval.
+* Toast notifications for user feedback.
+* Mobile responsive layout.
 
 ## Architecture
 
-* **Frontend:** HTML & CSS
+* **Frontend:** Single-file HTML with inline CSS/JS (`index.html`)
 * **Backend/Data Pipeline:** Python scripts executed via GitHub Actions
+* **API:** Vercel Serverless Functions (`api/fetchMarkers.js`, `api/submitMarker.js`)
 * **Database:** Airtable
 * **Hosting:** Vercel
 * **External APIs:** OpenAI API (GPT-3.5 & GPT-4.5)
@@ -38,48 +42,35 @@ nfejar.online visualizes explosion events in Iran, during regional conflicts in 
    * Estimated latitude and longitude
    * Summary reasoning in Farsi
 5. **Database Integration:** Structured results are saved to Airtable.
-6. **Website Rendering:** Data is fetched from Airtable and displayed on the map.
+6. **Website Rendering:** Data is fetched from Airtable via serverless API and displayed on the map.
 
-## Installation & Setup
+## Deployment
 
-This repository primarily serves as a data visualization frontend; the backend pipeline runs via GitHub Actions. For development or local execution:
+This project is deployed on Vercel as a static site with serverless API functions.
 
-1. Clone the repository:
+### Environment Variables (set in Vercel dashboard)
 
-```bash
-git clone https://github.com/your-org/ir-explosion-map.git
-cd ir-explosion-map
+```
+AIRTABLE_READ_TOKEN    — Airtable read-only personal access token
+AIRTABLE_WRITE_TOKEN   — Airtable write personal access token
+AIRTABLE_BASE_ID       — Airtable base ID
 ```
 
-2. Install Python dependencies:
+### Local Development
+
+For local development with API routes, use the Vercel CLI:
 
 ```bash
-pip install -r requirements.txt
+npm i -g vercel
+vercel dev
 ```
-
-3. Set environment variables:
-
-```bash
-export OPENAI_API_KEY="your_openai_api_key"
-export AIRTABLE_API_KEY="your_airtable_api_key"
-export AIRTABLE_BASE_ID="your_airtable_base_id"
-```
-
-4. Place input Telegram data (`telegram_posts.json` or `grouped_reports.json`) in the project root if running scripts locally.
-
-5. Run scripts:
-
-```bash
-python process_reports.py   # GPT-3.5 translation and cleaning
-python analyze_reports.py   # GPT-4.5 cluster analysis
-```
-
 
 ## Usage
 
-* Use Airtable to display the markers in the website
+* Events are automatically loaded from Airtable on page load.
 * Click markers to inspect event details.
-* Use the search bar to locate events by city.
+* Use the search bar to locate events by city or description.
+* Click "ثبت رویداد" to submit new event reports.
 * Note: Data updates may have slight delays due to scheduled GitHub Actions.
 
 ## Limitations
