@@ -2,7 +2,7 @@
 
 ## Overview
 
-nfejar.online visualizes explosion events in Iran, during regional conflicts in the Middle East, based on citizen-submitted reports from Telegram. The platform aggregates, processes, and analyzes reports to provide approximate locations, event types, and target classifications. The website aims to inform the general public about areas affected by explosions.
+nfejar.online visualizes explosion events in Iran, based on citizen-submitted reports from Telegram. The platform aggregates, processes, and analyzes reports to provide approximate locations, event types, and target classifications. The website aims to inform the general public about areas affected by explosions.
 
 ## Features
 
